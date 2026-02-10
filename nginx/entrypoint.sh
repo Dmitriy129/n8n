@@ -21,4 +21,7 @@ if [ ! -f "$FULLCHAIN" ] || [ ! -f "$PRIVKEY" ]; then
     -subj "/CN=$DOMAIN"
 fi
 
+# Generate nginx config from template (replaces default, so 80 + 443 use our config)
+envsubst '${DOMAIN}' < /etc/nginx/templates/n8n.conf.template > /etc/nginx/conf.d/default.conf
+
 exec nginx -g "daemon off;"
