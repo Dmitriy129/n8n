@@ -28,9 +28,11 @@ services:
     environment:
       - DOMAIN=${DOMAIN}
     volumes:
+      - ./nginx/entrypoint.sh:/entrypoint.sh:ro
       - ./nginx/templates:/etc/nginx/templates:ro
       - certbot_www:/var/www/certbot
       - certbot_certs:/etc/letsencrypt
+    entrypoint: ["/bin/sh", "/entrypoint.sh"]
     depends_on:
       - n8n
     networks:
