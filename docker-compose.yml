@@ -40,6 +40,15 @@ services:
 
   certbot:
     image: certbot/certbot:latest
+    restart: "no"
+    volumes:
+      - certbot_www:/var/www/certbot
+      - certbot_certs:/etc/letsencrypt
+    networks:
+      - n8n
+
+  certbot-renew:
+    image: certbot/certbot:latest
     restart: unless-stopped
     volumes:
       - certbot_www:/var/www/certbot
