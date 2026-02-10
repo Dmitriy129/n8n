@@ -21,7 +21,14 @@ if [ ! -f "$FULLCHAIN" ] || [ ! -f "$PRIVKEY" ]; then
     -subj "/CN=$DOMAIN"
 fi
 
+# Certbot may write to domain-0001 when domain dir already exists; prefer that for SSL
+if [ -f "/etc/letsencrypt/live/${DOMAIN}-0001/fullchain.pem" ]; then
+  export CERT_PATH="${DOMAIN}-0001"
+else
+  export CERT_PATH="${DOMAIN}"
+fi
+
 # Generate nginx config from template (replaces default, so 80 + 443 use our config)
-envsubst '${DOMAIN}' < /etc/nginx/templates/n8n.conf.template > /etc/nginx/conf.d/default.conf
+envsubst '${DOMAIN} ${CERT_PATH}' < /etc/nginx/templates/n8n.conf.template > /etc/nginx/conf.d/default.conf
 
 exec nginx -g "daemon off;"
