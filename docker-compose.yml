@@ -23,8 +23,8 @@ services:
     image: nginx:1.27-alpine
     restart: unless-stopped
     expose:
-      - "80:80"
-      - "443:443"
+      - 80
+      - 443
     environment:
       - DOMAIN=${DOMAIN}
     volumes:
