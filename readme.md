@@ -4,12 +4,34 @@ cp .env.example .env
 Заполни DOMAIN и EMAIL
 2) Подними сервисы:
 docker compose up -d nginx n8n
+3) Удали самоподписанные серты
+```
+docker compose run --rm \
+  --entrypoint sh \
+  certbot -c 'rm -rf \
+    /etc/letsencrypt/live/n8n.wowwhatisit.top \
+    /etc/letsencrypt/archive/n8n.wowwhatisit.top \
+    /etc/letsencrypt/renewal/n8n.wowwhatisit.top.conf || true'
+```
 3) Получи первый сертификат:
-docker compose run --rm certbot certonly --webroot -w /var/www/certbot -d "$DOMAIN" --email "$EMAIL" --agree-tos --no-eff-email
+```
+docker compose run --rm certbot certonly \
+  --webroot -w /var/www/certbot \
+  -d "$DOMAIN" \
+  --email "$EMAIL" \
+  --agree-tos \
+  --no-eff-email
+```
 4) Перезапусти nginx:
+```
 docker compose restart nginx
+```
+5) Включи автообновление сертификатов:
+```
+docker compose up -d certbot-renew
+```
 SSL‑обновление
-certbot контейнер уже крутит renew каждые 12 часов.
+certbot-renew контейнер крутит `certbot renew` каждые 12 часов.
 
 
 https://api.telegram.org/bot8465858119:AAE9Of95pteIT4V0BGG8GDgbA87HFvqrHvc/deleteWebhook
